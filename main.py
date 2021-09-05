@@ -21,7 +21,7 @@ class Portal2D:
         self.screen = pygame.display.set_mode(self.resolution)
 
         # Instance of Map class
-        self.map = Map(map00, "res/tiles.png", tile_count=4, tile_size=64)
+        self.map = Map(test_chamber, "res/tiles.png", tile_count=4, tile_size=64)
 
         # Name of window
         pygame.display.set_caption("Portal2D")
