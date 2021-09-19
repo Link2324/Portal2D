@@ -22,23 +22,27 @@ class Map:
         # total no. of tiles
         self.tile_count = tile_count
 
+        # Surface for map
+        self.surf = pygame.surface.Surface((self.width * self.tile_size, self.width * self.tile_size))
+
+        self.surf.fill((51, 51, 51))
         # List for storing tiles
         self.tile = []
 
         # Save Tile object in tile list
         self.__load_tiles()
 
-    def draw_map(self, screen):
+    def draw_map(self):
         """method for drawing map on screen"""
 
         for j in range(0, self.height):
             for i in range(0, self.width):
                 if self.level[j][i] == 1:
-                    screen.blit(self.tile[0].tile_image, (i * self.tile_size, j * self.tile_size))
+                    self.surf.blit(self.tile[0].tile_image, (i * self.tile_size, j * self.tile_size))
                 elif self.level[j][i] == 2:
-                    screen.blit(self.tile[1].tile_image, (i * self.tile_size, j * self.tile_size))
+                    self.surf.blit(self.tile[1].tile_image, (i * self.tile_size, j * self.tile_size))
                 elif self.level[j][i] == 3:
-                    screen.blit(self.tile[2].tile_image, (i * self.tile_size, j * self.tile_size))
+                    self.surf.blit(self.tile[2].tile_image, (i * self.tile_size, j * self.tile_size))
 
     def __load_tiles(self):
         """insert Tile in tile list """
