@@ -60,9 +60,9 @@ class Map:
                 tile_image = self.tile_sprite.subsurface(tile_rect)
 
                 if index == 0:
-                    tile = Tile(tile_image, portal=True, collision=False)
+                    tile = Tile(tile_image, portal=True, collision=True)
                 elif index == 1:
-                    tile = Tile(tile_image, portal=False, collision=False)
+                    tile = Tile(tile_image, portal=False, collision=True)
                 else:
                     tile = Tile(tile_image)
 
