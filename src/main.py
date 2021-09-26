@@ -1,5 +1,5 @@
-import sys
 import os
+import sys
 
 from entity import *
 from map import Map
@@ -35,7 +35,7 @@ class Portal2D:
         self.map.draw_map()
 
         # Instance of player
-        self.player = Player(f"{self.path}/res/player1.png", spawn_point=(64, 64))
+        self.player = Player(f"{self.path}/res/player1.png", self.map, spawn_point=(64, 64))
 
     def run_game(self):
         """Game loop"""
@@ -56,7 +56,6 @@ class Portal2D:
                 sys.exit()
 
         pressed = pygame.key.get_pressed()
-        print(pressed)
         self.player.moving_up, self.player.moving_down, self.player.moving_left, self.player.moving_right = \
             [pressed[key] for key in (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d)]
 
