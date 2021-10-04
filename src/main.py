@@ -4,6 +4,7 @@ import sys
 from entity import *
 from map import Map
 from map_list import *
+from camera import Camera
 
 
 class Portal2D:
@@ -29,13 +30,15 @@ class Portal2D:
         pygame.display.set_caption("Portal2D")
 
         # Instance of Map class
-        self.map = Map(test_chamber, f"{self.path}/res/tiles.png", tile_count=4, tile_size=64)
+        self.map = Map(map02, f"{self.path}/res/tiles.png", tile_count=4, tile_size=64)
 
         # Draws map on surface
         self.map.draw_map()
 
         # Instance of player
-        self.player = Player(f"{self.path}/res/player1.png", self.map, spawn_point=(64, 64))
+        self.player = Player(f"{self.path}/res/player1.png", self.map)
+
+        self.camera = Camera()
 
     def run_game(self):
         """Game loop"""
@@ -60,11 +63,12 @@ class Portal2D:
             [pressed[key] for key in (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d)]
 
     def __update(self):
-        self.player.update()
+        self.camera.do_camera(self.player.moving_left, self.player.moving_right, self.map)
+        #self.player.update()
 
     def __draw(self):
-        self.screen.blit(self.map.surf, (0, 0))
-        self.player.blit_me(self.screen)
+        self.screen.blit(self.map.surf, (-self.map.x, self.map.y))
+        #self.player.blit_me(self.screen)
 
 
 if __name__ == '__main__':

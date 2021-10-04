@@ -10,7 +10,7 @@ from map import Map
 class Entity:
     """Class for entity"""
 
-    def __init__(self, image, level: Map, spawn_point=(0, 0)):
+    def __init__(self, image, level: Map):
 
         # Load entity image
         self.image = pygame.image.load(image)
@@ -28,9 +28,10 @@ class Entity:
         # Entity property
         self.mass = 10
 
-        self.pos = Vector2(spawn_point[0], spawn_point[1])
-        self.rect.x = spawn_point[0]
-        self.rect.y = spawn_point[1]
+        self.old_position = Vector2()
+        self.pos = Vector2(64, 64)
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
         self.vel = Vector2((4, 4))
         self.force = Vector2((0, 0))
 
@@ -65,8 +66,8 @@ class Entity:
 class Player(Entity):
     """Class for player """
 
-    def __init__(self, image, level, spawn_point=(0, 0)):
-        super().__init__(image, level, spawn_point)
+    def __init__(self, image, level):
+        super().__init__(image, level)
 
         # Flags for player movement
         self.moving_right = False
@@ -76,21 +77,24 @@ class Player(Entity):
 
     def update(self):
         # Old Position
-        self.pos.x = self.rect.x
-        self.pos.y = self.rect.y
+        self.old_position.x = self.pos.x
+        self.old_position.y = self.pos.y
 
         if self.moving_right:
-            self.rect.x += self.vel.x
+            self.pos.x += self.vel.x
 
         if self.moving_left:
-            self.rect.x -= self.vel.x
+            self.pos.x -= self.vel.x
 
         if self.moving_up:
-            self.rect.y -= self.vel.y
+            self.pos.y -= self.vel.y
 
         if self.moving_down:
-            self.rect.y += self.vel.y
+            self.pos.y += self.vel.y
+
+        self.rect.x = self.pos.x
+        self.rect.y = self.pos.y
 
         if self.collision():
-            self.rect.x = self.pos.x
-            self.rect.y = self.pos.y
+            self.pos.x = self.old_position.x
+            self.pos.y = self.old_position.y

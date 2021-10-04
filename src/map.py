@@ -9,6 +9,9 @@ class Map:
         # level is 2D list to store map data
         self.level = level
 
+        self.x = 0
+        self.y = 0
+
         # width and height store map height and width in number of tiles
         self.width = len(level[0])
         self.height = len(level)
