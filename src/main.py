@@ -17,6 +17,7 @@ class Portal2D:
         # Create an object to help track time
         self.clock = pygame.time.Clock()
 
+        self.MS_PER_UPDATE = 1000 / 60
         # pygame window size
         self.resolution = (1280, 720)
 
@@ -42,16 +43,19 @@ class Portal2D:
 
     def run_game(self):
         """Game loop"""
+        self.clock.tick()
+        lag = 0
         while True:
+            elapsed = self.clock.tick()
+            lag += elapsed
             self.__input()
-            self.__update()
+            while lag > self.MS_PER_UPDATE:
+                self.__update()
+                lag -= self.MS_PER_UPDATE
             self.__draw()
 
             # Clears screen
             pygame.display.flip()
-
-            # Fps limit
-            self.clock.tick(60)
 
     def __input(self):
         for event in pygame.event.get():
@@ -64,11 +68,11 @@ class Portal2D:
 
     def __update(self):
         self.camera.do_camera(self.player.moving_left, self.player.moving_right, self.map)
-        #self.player.update()
+        self.player.update()
 
     def __draw(self):
         self.screen.blit(self.map.surf, (-self.map.x, self.map.y))
-        #self.player.blit_me(self.screen)
+        self.player.blit_me(self.screen)
 
 
 if __name__ == '__main__':
