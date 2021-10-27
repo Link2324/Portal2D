@@ -4,7 +4,6 @@ import sys
 from entity import *
 from map import Map
 from map_list import *
-from camera import Camera
 
 
 class Portal2D:
@@ -25,7 +24,7 @@ class Portal2D:
         self.screen = pygame.display.set_mode(self.resolution)
 
         # Path for res
-        self.path = os.path.dirname(os.getcwd())
+        self.path = os.path.dirname(__file__).split("\\src")[0]
 
         # Name of window
         pygame.display.set_caption("Portal2D")
@@ -38,8 +37,6 @@ class Portal2D:
 
         # Instance of player
         self.player = Player(f"{self.path}/res/player1.png", self.map)
-
-        self.camera = Camera()
 
     def run_game(self):
         """Game loop"""
@@ -67,7 +64,6 @@ class Portal2D:
             [pressed[key] for key in (pygame.K_w, pygame.K_s, pygame.K_a, pygame.K_d)]
 
     def __update(self):
-        self.camera.do_camera(self.player.moving_left, self.player.moving_right, self.map)
         self.player.update()
 
     def __draw(self):
