@@ -1,3 +1,5 @@
+import sys
+
 import pygame
 from pygame.math import *
 from map import Map
@@ -34,6 +36,15 @@ class Entity:
         self.vel = Vector2((8, 8))
         self.force = Vector2((0, 0))
 
+        self.OnGround = False
+        self.wasGround = False
+        self.pushesRightWall = False
+        self.pushedRightWall = False
+        self.pushesLeftWall = False
+        self.pushedLeftWall = False
+        self.AtCeiling = False
+        self.WasCeiling = False
+
     def blit_me(self, screen):
         screen.blit(self.image, self.rect)
 
@@ -44,14 +55,13 @@ class Entity:
         right = int((self.rect.right + self.map.x) / self.map.tile_size) + 1
         down = int(self.rect.bottom / self.map.tile_size) + 1
 
+        rect_list = []
         for m in range(left, right + 1):
             for n in range(up, down + 1):
                 try:
                     tile_id = self.map.level[n][m] - 1
-                    print(tile_id)
                 except IndexError:
-                    print("IndexError")
-                    return True
+                    continue
 
                 if tile_id == -1:
                     continue
@@ -63,8 +73,9 @@ class Entity:
                 rect = pygame.Rect(m * self.map.tile_size - self.map.x, n * self.map.tile_size,
                                    self.map.tile_size, self.map.tile_size)
                 if self.rect.colliderect(rect):
-                    return True
-        return False
+                    rect_list.append(rect)
+
+        return rect_list
 
 
 class Player(Entity):
@@ -78,11 +89,17 @@ class Player(Entity):
         self.moving_left = False
         self.moving_up = False
         self.moving_down = False
+        self.exit = False
 
     def update(self):
         # Old Position
         self.old_position.x = self.pos.x
         self.old_position.y = self.pos.y
+
+        self.wasGround = self.OnGround
+        self.pushedRightWall = self.pushesRightWall
+        self.pushedLeftWall = self.pushesLeftWall
+        self.WasCeiling = self.AtCeiling
 
         if self.moving_right:
             self.pos.x += self.vel.x
@@ -96,6 +113,9 @@ class Player(Entity):
         if self.moving_down:
             self.pos.y += self.vel.y
 
+        if self.exit:
+            sys.exit(0)
+
         self.map.x = self.pos.x - 640 + self.vel.x
         if self.map.x < 0:
             self.map.x = 0
@@ -103,9 +123,18 @@ class Player(Entity):
         if self.map.x > self.map.width * self.map.tile_size - 1280:
             self.map.x = self.map.width * self.map.tile_size - 1280
 
+        pygame.mouse.get_pos()
+
         self.rect.x = self.pos.x - self.map.x
         self.rect.y = self.pos.y
 
-        if self.collision():
+        self.OnGround = False
+        self.pushesRightWall = False
+        self.pushesLeftWall = False
+        self.AtCeiling = False
+
+        rect = self.collision()
+
+        if len(rect) != 0:
             self.pos.x = self.old_position.x
             self.pos.y = self.old_position.y
