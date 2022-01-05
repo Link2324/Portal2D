@@ -4,7 +4,6 @@ import pygame
 from pygame.math import *
 from map import Map
 
-
 # A game entity is an object that interacts with the game
 # and responds to player input or other entities
 

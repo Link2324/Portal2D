@@ -3,3 +3,5 @@
 *.pyc
 /res/670930.tsx
 /res/tiles.tsx
+/.vscode/launch.json
+/.vscode/settings.json

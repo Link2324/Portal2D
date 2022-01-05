@@ -1,8 +1,10 @@
 import os
 
 from entity import *
+from gun import Gun
 from map import Map
 from map_list import *
+import math
 
 
 class Portal2D:
@@ -37,14 +39,21 @@ class Portal2D:
         # Draws map on surface
         self.map.draw_map()
 
-        # Image for mouse cursor
-        self.cursor = pygame.image.load(f"{self.path}/res/cursor.png")
-
         # variable for mouse cursor position
         self.pos = pygame.mouse.get_pos()
 
+        # Image for mouse cursor
+        self.cursor = pygame.image.load(f"{self.path}/res/cursor.png")
+        self.cursor_rect = self.cursor.get_rect()
+
+        self.gun = Gun(f"{self.path}/res/gun.png", self.map)
+
         # Instance of player
         self.player = Player(f"{self.path}/res/player2.png", self.map)
+
+        # Flags for cursor position with respect to player
+        self.facing_right = True
+        self.wasFacing_right = True
 
     def run_game(self):
         """Game loop"""
@@ -79,12 +88,41 @@ class Portal2D:
         self.pos = pygame.mouse.get_pos()
 
     def __update(self):
-        self.player.update()
+        self.wasFacing_right = self.facing_right
 
-    def __draw(self):
+        self.player.update()
+        self.cursor_rect.center = self.pos
+        x = self.player.rect.x + self.player.rect.w / 2
+        y = self.player.rect.y + self.player.rect.h / 3
+
+        temp = 0
+        if self.pos[0] <= x:
+            temp = -180
+            self.facing_right = False
+        else:
+            self.facing_right = True
+
+        if self.wasFacing_right:
+            if not self.facing_right:
+                self.player.image = pygame.transform.flip(self.player.image, True, False)
+        else:
+            if self.facing_right:
+                self.player.image = pygame.transform.flip(self.player.image, True, False)
+
+        try:
+            angle = temp + int(math.degrees(math.atan((self.pos[1] - y) / (self.pos[0] - x))))
+        except ZeroDivisionError:
+            if y - self.pos[1] > 0:
+                angle = - 90
+            else:
+                angle = 90
+        self.gun.update(x, y, angle)
+
+    def __draw(self): 
         self.screen.blit(self.map.surf, (-self.map.x, self.map.y))
         self.player.blit_me(self.screen)
-        self.screen.blit(self.cursor, self.pos)
+        self.screen.blit(self.gun.rotated_surf, self.gun.rotated_rect)
+        self.screen.blit(self.cursor, self.cursor_rect)
 
 
 if __name__ == "__main__":
