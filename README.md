@@ -1,4 +1,4 @@
-# Portal2D
+# Portal2D (WIP)
  A simple portal game in python, inspired from valve's portal series
 
 * **src/**
